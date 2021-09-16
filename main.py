@@ -4,6 +4,8 @@ from fastapi import FastAPI, Body, Request, File, UploadFile, Form
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
+testvar:int = 0
+
 app = FastAPI()
 
 origins = [
@@ -33,6 +35,14 @@ class TestItem(BaseModel):
 def read_root():
     return {"Hello": "World"}
 
+@app.post("/files/")
+async def create_file(file: bytes = File(...)):
+    return {"file_size": len(file)}
+
+
+@app.post("/uploadfile/")
+async def create_upload_file(file: UploadFile = File(...)):
+    return {"filename": file.filename}
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Optional[str] = None):
@@ -45,13 +55,12 @@ def update_item(item_id: int, item: Item):
 
 @app.post('/push/rawcode')
 def get_rawcode(test: TestItem):
-    print('salut')
-    print('test == ', test)
-    print('test.code == ', test.code)
+    f = open('./assets/code' + str(testvar) + '.txt', "w")
+    f.write(test.code)
     return {'success': 'true'}
 
 @app.post('/push/filecode')
-def get_rawcode(test: Request):
+def get_rawcode(test: BaseModel):
     print('salut')
     print('test == ', test)
 
