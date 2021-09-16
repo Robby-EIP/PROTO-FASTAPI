@@ -3,6 +3,8 @@ from typing import Optional
 from fastapi import FastAPI, Body, Request, File, UploadFile, Form
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.responses import aiofiles
+# import aiofiles
 
 testvar:int = 0
 
@@ -35,35 +37,16 @@ class TestItem(BaseModel):
 def read_root():
     return {"Hello": "World"}
 
-@app.post("/files/")
-async def create_file(file: bytes = File(...)):
-    return {"file_size": len(file)}
-
-
-@app.post("/uploadfile/")
-async def create_upload_file(file: UploadFile = File(...)):
-    return {"filename": file.filename}
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
-
-
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
-
 @app.post('/push/rawcode')
 def get_rawcode(test: TestItem):
     f = open('./assets/code' + str(testvar) + '.txt', "w")
     f.write(test.code)
     return {'success': 'true'}
 
-@app.post('/push/filecode')
-def get_rawcode(test: BaseModel):
-    print('salut')
-    print('test == ', test)
-
 @app.post('/push/image')
-async def image(image: UploadFile = File(...)):
-    return {"filename": image.filename}
+async def image(file: UploadFile = File(...)):
+    print(file)
+    async with aiofiles.open(f"./assets/{file.filename}", 'wb+') as out_file:
+        content = await file.read()  # async read
+        await out_file.write(content)  # async write
+    return {"filename": file.filename}
