@@ -49,4 +49,4 @@ async def image(file: UploadFile = File(...)):
     async with aiofiles.open(f"./assets/{file.filename}", 'wb+') as out_file:
         content = await file.read()  # async read
         await out_file.write(content)  # async write
-    return {"filename": file.filename}
+    return {"success": "true"}
