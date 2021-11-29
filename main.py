@@ -54,13 +54,13 @@ async def image(file: UploadFile = File(...)):
     temp = file.filename.split('.')
     if temp[len(temp) - 1] == 'hex':
         os.system('mv *.hex assets.hex')
-        os.system('/home/chamet/Bureau/arduino-1.8.16/hardware/tools/avr/bin/avrdude -C/home/chamet/Bureau/arduino-1.8.16/hardware/tools/avr/etc/avrdude.conf -v -c arduino -p atmega328p -P net:172.20.10.2:80 -Uflash:w:./assets.hex:i')
+        os.system('./../ArduinoExecs/avrdude -C./../ArduinoExecs/avrdude.conf -v -c arduino -p atmega328p -P net:172.20.10.5:80 -Uflash:w:./assets.hex:i')
         os.system('rm *.hex')
     elif temp[len(temp) - 1] == 'ino':
         os.system('mv *.ino assets.ino')
-        os.system('/home/chamet/Bureau/arduino-cli board attach arduino:avr:uno')
-        os.system('/home/chamet/Bureau/arduino-cli compile ./assets/ -e')
-        os.system('/home/chamet/Bureau/arduino-1.8.16/hardware/tools/avr/bin/avrdude -C/home/chamet/Bureau/arduino-1.8.16/hardware/tools/avr/etc/avrdude.conf -v -c arduino -p atmega328p -P net:172.20.10.2:80 -Uflash:w:./build/arduino.avr.uno/assets.ino.hex:i')
+        os.system('./../ArduinoExecs/arduino-cli board attach arduino:avr:uno')
+        os.system('./../ArduinoExecs/arduino-cli compile ./assets/ -e')
+        os.system('./../ArduinoExecs/avrdude -C./../ArduinoExecs/avrdude.conf -v -c arduino -p atmega328p -P net:172.20.10.5:80 -Uflash:w:./build/arduino.avr.uno/assets.ino.hex:i')
         os.system('rm -rf build')
         os.system('rm *.ino')
         os.system('rm sketch.json')
